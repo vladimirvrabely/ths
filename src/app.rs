@@ -1,21 +1,28 @@
+use crate::modbus::SensorReader;
 use std::error::Error;
-use tokio_modbus::{client::{rtu::attach_slave, Reader}, slave::Slave};
+use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 
-pub async fn run() -> Result<(), Box<dyn Error>>{
-    println!("yep");
+pub async fn run() -> Result<(), Box<dyn Error>> {
+    tracing_subscriber::registry()
+        .with(fmt::layer())
+        .with(EnvFilter::from_default_env())
+        .init();
+
+    tracing::info!("Starting temperature/humidity sensor service");
+
     let tty_path = "/dev/ttyUSB0";
-    let baud_rate = 9600;
-    let builder = tokio_serial::new(tty_path, baud_rate);
-    let serial_stream = tokio_serial::SerialStream::open(&builder).unwrap();
-    let slave = Slave(1);
-    let mut client = attach_slave(serial_stream, slave);
-    println!("Created client");
 
-    let ir = client.read_input_registers(1, 1).await.unwrap().unwrap();
-    println!("{:?}", ir);
+    let mut sensor_reader = SensorReader::new(tty_path).expect("Modbus reader should be created");
 
-    let ir = client.read_input_registers(1, 2).await.unwrap().unwrap();
-    println!("{:?}", ir);
-
-    Ok(())
+    loop {
+        match sensor_reader.read().await {
+            Ok(measurement) => {
+                println!("{:?}", measurement);
+            }
+            Err(error) => {
+                tracing::error!("Sensor reading error - {}", error)
+            }
+        }
+        tokio::time::sleep(std::time::Duration::from_secs(2)).await;
+    }
 }
