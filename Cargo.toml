@@ -11,3 +11,13 @@ tokio-serial = "5.4.5"
 tokio-stream = "0.1"
 tracing = "0.1"
 
+
+[lib]
+name = "ths"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ths"
+path = "src/main.rs"
+
+
