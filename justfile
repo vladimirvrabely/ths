@@ -13,11 +13,11 @@ clippy: fmt
 
 # Rust check
 check: clippy
-        cargo check --workspace --all-features
+        cargo check
 
 # Rust build
 build: clippy
-        cargo build --workspace --all-features
+        cargo build
 
 # Rust doc
 doc:
