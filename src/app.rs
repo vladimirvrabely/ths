@@ -1,4 +1,7 @@
+use std::fs::File;
+use std::io::Write;
 use std::time::Duration;
+
 use chrono::Utc;
 use tokio::signal::unix::{SignalKind, signal};
 use tokio::sync::mpsc;
@@ -16,6 +19,7 @@ pub async fn run() {
     tracing::info!("Starting temperature/humidity sensor service");
 
     let tty_path = String::from("/dev/ttyUSB0");
+    let file = String::from("measurement.csv");
     let period = Duration::from_secs(5);
 
     let (tx, rx) = mpsc::channel(32);
@@ -24,17 +28,20 @@ pub async fn run() {
     let _modbus_read_task = spawn_modbus_read_task(tty_path, period, tx);
 
     tracing::info!("Spawning measurement write task");
-    let _measurement_write_task = spawn_measurement_write_task(rx);
+    let _measurement_write_task = spawn_measurement_write_task(rx, file);
 
     tracing::info!("Waiting for termination signal");
     let _ = catch_terminate_signal().recv().await;
 }
 
-fn spawn_modbus_read_task(tty_path: String, period: Duration, tx: mpsc::Sender<Measurement>) -> JoinHandle<()> {
-
+fn spawn_modbus_read_task(
+    tty_path: String,
+    period: Duration,
+    tx: mpsc::Sender<Measurement>,
+) -> JoinHandle<()> {
     tokio::spawn(async move {
-        let mut sensor_reader = SensorReader::new(&tty_path).expect("Modbus reader should be created");
-
+        let mut sensor_reader =
+            SensorReader::new(&tty_path).expect("Modbus reader should be created");
 
         // Wait until roundish time
         let now = Utc::now();
@@ -58,12 +65,23 @@ fn spawn_modbus_read_task(tty_path: String, period: Duration, tx: mpsc::Sender<M
     })
 }
 
-fn spawn_measurement_write_task(rx: mpsc::Receiver<Measurement>) -> JoinHandle<()> {
+fn spawn_measurement_write_task(rx: mpsc::Receiver<Measurement>, file: String) -> JoinHandle<()> {
     tokio::spawn(async move {
         let stream = ReceiverStream::new(rx);
         tokio::pin!(stream);
         while let Some(measurement) = stream.next().await {
             println!("{measurement:?}");
+            let mut file = File::options()
+                .create(true)
+                .append(true)
+                .open(&file)
+                .expect("should opened the measurement file");
+            writeln!(
+                file,
+                "{},{},{}",
+                measurement.at, measurement.temperature, measurement.humidity
+            )
+            .expect("should wrote to measurement file");
         }
     })
 }
