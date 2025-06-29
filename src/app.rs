@@ -13,13 +13,11 @@ use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 use crate::modbus::SensorReader;
 use crate::model::Measurement;
 
-pub async fn run() {
+pub async fn run(tty_path: String, measurement_file: String) {
     init_env_logging();
 
     tracing::info!("Starting temperature/humidity sensor service");
 
-    let tty_path = String::from("/dev/ttyUSB0");
-    let file = String::from("measurement.csv");
     let period = Duration::from_secs(5);
 
     let (tx, rx) = mpsc::channel(32);
@@ -28,7 +26,7 @@ pub async fn run() {
     let _modbus_read_task = spawn_modbus_read_task(tty_path, period, tx);
 
     tracing::info!("Spawning measurement write task");
-    let _measurement_write_task = spawn_measurement_write_task(rx, file);
+    let _measurement_write_task = spawn_measurement_write_task(rx, measurement_file);
 
     tracing::info!("Waiting for termination signal");
     let _ = catch_terminate_signal().recv().await;
@@ -65,7 +63,10 @@ fn spawn_modbus_read_task(
     })
 }
 
-fn spawn_measurement_write_task(rx: mpsc::Receiver<Measurement>, file: String) -> JoinHandle<()> {
+fn spawn_measurement_write_task(
+    rx: mpsc::Receiver<Measurement>,
+    measurement_file: String,
+) -> JoinHandle<()> {
     tokio::spawn(async move {
         let stream = ReceiverStream::new(rx);
         tokio::pin!(stream);
@@ -74,7 +75,7 @@ fn spawn_measurement_write_task(rx: mpsc::Receiver<Measurement>, file: String) -
             let mut file = File::options()
                 .create(true)
                 .append(true)
-                .open(&file)
+                .open(&measurement_file)
                 .expect("should opened the measurement file");
             writeln!(
                 file,
