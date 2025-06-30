@@ -1,0 +1,12 @@
+[project]
+name = "ths"
+version = "0.1.0"
+description = "Temperature/Humidity Sensor Notebooks"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=6.29.5",
+    "jupyterlab>=4.4.4",
+    "plotly[express,pandas]>=6.2.0",
+    "polars>=1.31.0",
+]
