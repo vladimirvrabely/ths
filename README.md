@@ -5,7 +5,7 @@ Small project to read temperature/humidity sensor and store measurements.
 
 ## Hardware
 
-* Raspberry Pi Zero W with USB 2.0 /USB mini hub
+* Raspberry Pi Zero W with USB 2.0/USB mini hub
 * [RS485-USB adapter](docs/RS485_USB-A_20_Adapter_5-Pin_with_CH340_USB_chip_and_SP3485+TVS.jpg)
 * [RS485 MODBUS-RTU Temperature Humidity Transmitter](docs/THT-XYMD03.pdf)
 
