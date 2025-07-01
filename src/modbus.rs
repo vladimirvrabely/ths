@@ -25,7 +25,6 @@ impl SensorReader {
         let ir = self.client.read_input_registers(1, 2).await??;
         let (temperature, humidity) = (ir[0], ir[1]);
         let at = Utc::now();
-        // TODO: check negative temperature
         let temperature = (temperature as i16) as f64 / 10.0;
         let humidity = humidity as f64 / 10.0;
         let measurement = Measurement {
