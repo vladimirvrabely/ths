@@ -2,10 +2,11 @@ use std::fs::File;
 use std::io::Write;
 use std::time::Duration;
 
-use chrono::Utc;
+use chrono::{DurationRound, TimeDelta, Utc};
 use tokio::signal::unix::{SignalKind, signal};
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
+use tokio::time::Instant;
 use tokio_stream::StreamExt;
 use tokio_stream::wrappers::{IntervalStream, ReceiverStream};
 use tracing_subscriber::{EnvFilter, fmt, prelude::*};
@@ -41,13 +42,8 @@ fn spawn_modbus_read_task(
         let mut sensor_reader =
             SensorReader::new(&tty_path).expect("Modbus reader should be created");
 
-        // Wait until roundish time
-        let now = Utc::now();
-        let wait = (now.timestamp_millis() as u64) % (period.as_millis() as u64);
-        let wait = period - Duration::from_millis(wait);
-        tokio::time::sleep(wait).await;
-
-        let interval = tokio::time::interval(period);
+        let start = Instant::now() + duration_to_next(period);
+        let interval = tokio::time::interval_at(start, period);
         let mut stream = IntervalStream::new(interval);
 
         while let Some(_instant) = stream.next().await {
@@ -109,4 +105,11 @@ fn catch_terminate_signal() -> mpsc::Receiver<Option<()>> {
     });
 
     stop_rx
+}
+
+fn duration_to_next(period: Duration) -> Duration {
+    let now = Utc::now();
+    let period = TimeDelta::from_std(period).expect("should create TimeDelta");
+    let next = now.duration_round_up(period).expect("should round up");
+    (next - now).to_std().expect("should create Duration")
 }
