@@ -2,4 +2,5 @@
 Cargo.lock
 uv.lock
 measurement.csv
+measurement.sqlite
 

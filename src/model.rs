@@ -6,6 +6,8 @@ pub enum AppError {
     ModbusError(#[from] tokio_modbus::Error),
     #[error(transparent)]
     ModbusExceptionCode(#[from] tokio_modbus::ExceptionCode),
+    #[error(transparent)]
+    SqlxError(#[from] sqlx::Error),
 }
 
 #[derive(Debug, Clone)]

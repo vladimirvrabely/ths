@@ -1,8 +1,15 @@
-use chrono::Utc;
+use std::time::Duration;
+
+use chrono::{DurationRound, TimeDelta, Utc};
+use tokio::sync::mpsc;
+use tokio::task::JoinHandle;
+use tokio::time::Instant;
 use tokio_modbus::{
     client::{Context, Reader, rtu::attach_slave},
     slave::Slave,
 };
+use tokio_stream::StreamExt;
+use tokio_stream::wrappers::IntervalStream;
 
 use crate::model::{AppError, Measurement};
 
@@ -34,4 +41,37 @@ impl SensorReader {
         };
         Ok(measurement)
     }
+}
+
+pub fn spawn_modbus_read_task(
+    tty_path: String,
+    period: Duration,
+    tx: mpsc::Sender<Measurement>,
+) -> JoinHandle<()> {
+    tokio::spawn(async move {
+        let mut sensor_reader =
+            SensorReader::new(&tty_path).expect("Modbus reader should be created");
+
+        let start = Instant::now() + duration_to_next(period);
+        let interval = tokio::time::interval_at(start, period);
+        let mut stream = IntervalStream::new(interval);
+
+        while let Some(_instant) = stream.next().await {
+            match sensor_reader.read().await {
+                Ok(measurement) => {
+                    let _ = tx.send(measurement).await;
+                }
+                Err(error) => {
+                    tracing::error!("Sensor reading error - {}", error)
+                }
+            }
+        }
+    })
+}
+
+fn duration_to_next(period: Duration) -> Duration {
+    let now = Utc::now();
+    let period = TimeDelta::from_std(period).expect("should create TimeDelta");
+    let next = now.duration_round_up(period).expect("should round up");
+    (next - now).to_std().expect("should create Duration")
 }
