@@ -1,7 +1,8 @@
 use std::fs::File;
 use std::io::Write;
+use std::str::FromStr;
 
-use sqlx::{Sqlite, SqlitePool, migrate::MigrateDatabase};
+use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
 use tokio_stream::StreamExt;
@@ -14,20 +15,10 @@ pub struct DbPool(sqlx::SqlitePool);
 
 impl DbPool {
     pub async fn create_database(path: &str) -> Result<(), AppError> {
-        if !(Sqlite::database_exists(path).await?) {
-            Sqlite::create_database(path).await?;
-        }
-        Ok(())
-    }
+        let opts = SqliteConnectOptions::from_str(path)?.create_if_missing(true);
+        let pool = SqlitePool::connect_with(opts).await?;
 
-    pub async fn new(path: &str) -> Result<Self, AppError> {
-        let pool = SqlitePool::connect(path).await?;
-        tracing::info!("Connected to {}", path);
-        Ok(Self(pool))
-    }
-
-    pub async fn create_measurement_table(&mut self) -> Result<(), AppError> {
-        let mut tx = self.0.begin().await?;
+        let mut tx = pool.begin().await?;
 
         let _res = sqlx::query!(
             r#"
@@ -45,7 +36,14 @@ impl DbPool {
         .await?;
 
         tx.commit().await?;
+
         Ok(())
+    }
+
+    pub async fn new(path: &str) -> Result<Self, AppError> {
+        let pool = SqlitePool::connect(path).await?;
+        tracing::info!("Connected to {}", path);
+        Ok(Self(pool))
     }
 
     pub async fn write_measurement(&mut self, measurement: Measurement) -> Result<(), AppError> {
@@ -77,12 +75,10 @@ pub fn spawn_sqlite_write_task(
         DbPool::create_database(&db_path)
             .await
             .expect("should create SQLite database");
-        let mut pool = DbPool::new(&db_path)
+
+        let pool = DbPool::new(&db_path)
             .await
             .expect("should connect to SQLite database");
-        pool.create_measurement_table()
-            .await
-            .expect("should create measurement table");
 
         tokio::pin!(stream);
         while let Some(measurement) = stream.next().await {
