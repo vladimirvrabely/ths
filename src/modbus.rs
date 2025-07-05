@@ -75,3 +75,24 @@ fn duration_to_next(period: Duration) -> Duration {
     let next = now.duration_round_up(period).expect("should round up");
     (next - now).to_std().expect("should create Duration")
 }
+
+pub fn _spawn_simu_modbus_read_task(
+    _tty_path: String,
+    period: Duration,
+    tx: mpsc::Sender<Measurement>,
+) -> JoinHandle<()> {
+    tokio::spawn(async move {
+        let start = Instant::now() + duration_to_next(period);
+        let interval = tokio::time::interval_at(start, period);
+        let mut stream = IntervalStream::new(interval);
+
+        while let Some(_instant) = stream.next().await {
+            let measurement = Measurement {
+                at: Utc::now(),
+                temperature: 25.0,
+                humidity: 50.0,
+            };
+            let _ = tx.send(measurement).await;
+        }
+    })
+}
