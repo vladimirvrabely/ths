@@ -34,11 +34,15 @@ Environment="DB_PATH=/home/<user>/data/measurement.sqlite"
 Environment="CSV_PATH=/home/<user>/data/measurement.csv"
 ExecStart=/home/<user>/bin/ths
 StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 * Start service
 ```
 systemctl start ths
+systemctl enable ths
 ```
 
 * Copy the file `/home/<user>/data/measurements.csv` and check the data with the notebook in `python/main.ipynb` notebook
