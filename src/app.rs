@@ -8,7 +8,7 @@ use crate::modbus::spawn_modbus_read_task;
 use crate::model::Measurement;
 use crate::sqlite::spawn_sqlite_write_task;
 
-pub async fn run(tty_path: String, db_path: String) {
+pub async fn run(tty_path: String, db_path: String, csv_path: String) {
     init_env_logging();
 
     tracing::info!("Starting temperature/humidity sensor service");
@@ -21,7 +21,7 @@ pub async fn run(tty_path: String, db_path: String) {
     let _modbus_read_task = spawn_modbus_read_task(tty_path, period, tx);
 
     tracing::info!("Spawning measurement write task");
-    let _sqlite_write_task = spawn_sqlite_write_task(rx, db_path);
+    let _sqlite_write_task = spawn_sqlite_write_task(rx, db_path, csv_path);
 
     tracing::info!("Waiting for termination signal");
     let _ = catch_terminate_signal().recv().await;

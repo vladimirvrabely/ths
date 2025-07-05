@@ -31,6 +31,7 @@ RestartSec=1
 User=<user>
 Environment="TTY_PATH=/dev/ttyUSB0"
 Environment="DB_PATH=/home/<user>/data/measurement.sqlite"
+Environment="CSV_PATH=/home/<user>/data/measurement.csv"
 ExecStart=/home/<user>/bin/ths
 StandardOutput=null
 ```

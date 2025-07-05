@@ -66,7 +66,11 @@ impl DbPool {
     }
 }
 
-pub fn spawn_sqlite_write_task(rx: mpsc::Receiver<Measurement>, db_path: String) -> JoinHandle<()> {
+pub fn spawn_sqlite_write_task(
+    rx: mpsc::Receiver<Measurement>,
+    db_path: String,
+    csv_path: String,
+) -> JoinHandle<()> {
     tokio::spawn(async move {
         let stream = ReceiverStream::new(rx);
 
@@ -83,6 +87,9 @@ pub fn spawn_sqlite_write_task(rx: mpsc::Receiver<Measurement>, db_path: String)
         tokio::pin!(stream);
         while let Some(measurement) = stream.next().await {
             tracing::debug!("Writing {:?}", &measurement);
+
+            write_measurement_to_file(&csv_path, measurement.clone());
+
             match pool.clone().write_measurement(measurement).await {
                 Ok(_) => {}
                 Err(err) => {
@@ -93,7 +100,7 @@ pub fn spawn_sqlite_write_task(rx: mpsc::Receiver<Measurement>, db_path: String)
     })
 }
 
-fn _write_measurement_to_file(file: &str, measurement: Measurement) {
+fn write_measurement_to_file(file: &str, measurement: Measurement) {
     let mut file = File::options()
         .create(true)
         .append(true)
