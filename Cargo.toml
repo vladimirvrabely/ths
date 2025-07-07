@@ -20,8 +20,8 @@ name = "ths"
 path = "src/lib.rs"
 
 [[bin]]
-name = "ths"
-path = "src/main.rs"
+name = "ths-app"
+path = "src/bin/app.rs"
 
 
 [profile.release]
