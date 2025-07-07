@@ -1,0 +1,26 @@
+[package]
+name = "ths"
+edition = "2024"
+version.workspace = true
+authors.workspace = true
+
+[dependencies]
+chrono = "0.4"
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"]}
+thiserror = "2.0"
+tokio = { version = "1.4", features = ["full"] }
+tokio-modbus = "0.16"
+tokio-serial = "5.4"
+tokio-stream = "0.1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"]}
+
+
+[lib]
+name = "ths"
+path = "src/lib.rs"
+
+[[bin]]
+name = "ths"
+path = "src/main.rs"
+
