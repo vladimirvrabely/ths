@@ -24,10 +24,11 @@ doc:
         RUSTDOCFLAGS="--enable-index-page -Zunstable-options" cargo +nightly doc --workspace --no-deps --all-features
 
 # Run
-run:
-        RUST_LOG=info,ths=debug cargo run --bin ths
+run bin lib="":
+        RUST_LOG=info,{{ lib }}=debug cargo run --bin {{ bin }}
+
 
 
 cross-build:
-        cross build --release --target=aarch64-unknown-linux-gnu
+        cross build --workspace --release --target=aarch64-unknown-linux-gnu
 

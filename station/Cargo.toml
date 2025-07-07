@@ -1,5 +1,5 @@
 [package]
-name = "ths"
+name = "ths-station"
 edition = "2024"
 version.workspace = true
 authors.workspace = true
@@ -17,10 +17,10 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"]}
 
 
 [lib]
-name = "ths"
+name = "ths_station"
 path = "src/lib.rs"
 
 [[bin]]
-name = "ths"
+name = "ths-station"
 path = "src/main.rs"
 

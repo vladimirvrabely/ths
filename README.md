@@ -1,7 +1,7 @@
 # ths
 
 
-Small project to read temperature/humidity sensor and store measurements.
+Small project for temperature/humidity sensor station.
 
 ## Hardware
 
@@ -32,7 +32,7 @@ User=<user>
 Environment="TTY_PATH=/dev/ttyUSB0"
 Environment="DB_PATH=/home/<user>/data/measurement.sqlite"
 Environment="CSV_PATH=/home/<user>/data/measurement.csv"
-ExecStart=/home/<user>/bin/ths
+ExecStart=/home/<user>/bin/ths-station
 StandardOutput=null
 
 [Install]
