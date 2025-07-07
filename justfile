@@ -9,15 +9,15 @@ fmt:
 
 # Rust clippy
 clippy: fmt
-        cargo clippy
+        cargo clippy --workspace
 
 # Rust check
 check: clippy
-        cargo check
+        cargo check --workspace
 
 # Rust build
 build: clippy
-        cargo build
+        cargo build --workspace
 
 # Rust doc
 doc:

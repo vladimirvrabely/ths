@@ -1,27 +1,12 @@
-[package]
-name = "ths"
+[workspace]
+members = [ "ths" ]
+resolver = "2"
+
+[workspace.package]
 version = "0.1.0"
-edition = "2024"
+authors = ["Vladimír Vrábeľ <vladimir.vrabely@gmail.com>"]
 
-[dependencies]
-chrono = "0.4"
-sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"]}
-thiserror = "2.0"
-tokio = { version = "1.4", features = ["full"] }
-tokio-modbus = "0.16"
-tokio-serial = "5.4"
-tokio-stream = "0.1"
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"]}
-
-
-[lib]
-name = "ths"
-path = "src/lib.rs"
-
-[[bin]]
-name = "ths-app"
-path = "src/bin/app.rs"
+[workspace.dependencies]
 
 
 [profile.release]
