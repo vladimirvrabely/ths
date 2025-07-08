@@ -20,7 +20,7 @@ pub async fn run(static_dir: &str) {
         .nest_service("/static", static_dir);
 
     // run it
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8000")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000")
         .await
         .expect("TCP listener should be created");
     tracing::info!("Listening on {}", listener.local_addr().unwrap());

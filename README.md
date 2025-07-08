@@ -63,7 +63,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=<user>
-Environment="STATIC_DIR=/home/ths/static"
+Environment="STATIC_DIR=/home/<user>/ths/static"
 ExecStart=/home/<user>/bin/ths-dashboard
 StandardOutput=null
 
