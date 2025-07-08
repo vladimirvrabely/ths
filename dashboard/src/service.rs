@@ -1,0 +1,57 @@
+use axum::{Router, routing::get};
+use tokio::signal::unix::{SignalKind, signal};
+use tokio::sync::mpsc;
+use tower_http::services::ServeDir;
+use tracing_subscriber::{EnvFilter, fmt, prelude::*};
+
+use crate::handler;
+
+pub async fn run(static_dir: &str) {
+    init_env_logging();
+    tracing::info!("Starting ths-dashboard service");
+
+    let mut stop_rx = catch_terminate_signal();
+
+    // build our application with a route
+    let static_dir = ServeDir::new(static_dir);
+
+    let app = Router::new()
+        .route("/", get(handler::index))
+        .nest_service("/static", static_dir);
+
+    // run it
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8000")
+        .await
+        .expect("TCP listener should be created");
+    tracing::info!("Listening on {}", listener.local_addr().unwrap());
+    axum::serve(listener, app)
+        .with_graceful_shutdown(async move {
+            let _ = stop_rx.recv().await;
+        })
+        .await
+        .expect("server should serve until graceful shutdown");
+}
+
+fn init_env_logging() {
+    tracing_subscriber::registry()
+        .with(fmt::layer())
+        .with(EnvFilter::from_default_env())
+        .init();
+}
+
+fn catch_terminate_signal() -> mpsc::Receiver<Option<()>> {
+    let (stop_tx, stop_rx) = mpsc::channel(1);
+
+    tokio::spawn(async move {
+        let stop = signal(SignalKind::terminate())
+            .expect("should create SIGTERM listener")
+            .recv()
+            .await;
+
+        tracing::info!("Received stop signal");
+
+        stop_tx.send(stop).await.unwrap();
+    });
+
+    stop_rx
+}

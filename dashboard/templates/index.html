@@ -1,0 +1,52 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="google" content="notranslate">
+  <link href="/static/beercss@3.11.30.min.css" rel="stylesheet">
+  <link href="/static/custom.css" rel="stylesheet">
+  <script src="/static/htmx.org@2.0.6.min.js"></script>
+  <meta name="htmx-config" content='{"responseHandling": [{"code":".*", "swap": true}]}'>
+  <title>Weather</title>
+</head>
+
+<body class="light">
+  <!-- <progress id="indicator" class="htmx-indicator center top"></progress> -->
+  <main class="responsive">
+    {% block main %}
+    <header>
+      <h3>Weather</h3>
+    </header>
+    <article class="primary-container">
+      <p class="italic">
+        Measured at
+      </p>
+      <h6>
+        <i class="extra">schedule</i>
+        2025-08-01 12:00:05
+      </h6>
+      <p class="italic">
+        Temperature
+      </p>
+      <h6>
+        <i class="extra">device_thermostat</i>
+        25.0 °C
+      </h6>
+      <p class="italic">
+        Humidity
+      </p>
+      <h6>
+        <i class="extra">humidity_mid</i>
+        50%
+      </h6>
+    </article>
+    <nav class="center-align">
+      <button class="responsive small-round">History</button>
+    </nav>
+    {% endblock %}
+  </main>
+</body>
+
+</html>

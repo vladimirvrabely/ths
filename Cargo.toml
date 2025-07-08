@@ -1,5 +1,5 @@
 [workspace]
-members = [ "station" ]
+members = [ "dashboard", "station" ]
 resolver = "2"
 
 [workspace.package]
