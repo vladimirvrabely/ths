@@ -17,12 +17,14 @@ Small project for temperature/humidity sensor station.
 just cross-build
 ```
 
-* Copy `target/aarch64-unknown-linux-gnu/release/ths` to RPi to the dir `/home/<user>/bin/`
+### ths-station
 
-* On RPi create `systemd` unit file called `/etc/systemd/system/ths.service`
+* Copy `target/aarch64-unknown-linux-gnu/release/ths-station` to RPi to the dir `/home/<user>/bin/`
+
+* On RPi create `systemd` unit file called `/etc/systemd/system/ths-station.service`
 ```
 [Unit]
-Description=Temperature Humidity Sensor
+Description=Temperature Humidity Sensor Station
 
 [Service]
 Type=simple
@@ -39,13 +41,41 @@ StandardOutput=null
 WantedBy=multi-user.target
 ```
 
-* Start service
+* Start services
 ```
-systemctl start ths
-systemctl enable ths
+systemctl start ths-station
+systemctl enable ths-station
 ```
 
 * Copy the file `/home/<user>/data/measurements.csv` and check the data with the notebook in `python/main.ipynb` notebook
+
+### ths-dashboard
+
+* Copy `target/aarch64-unknown-linux-gnu/release/ths-dashboard` to RPi to the dir `/home/<user>/bin/`
+
+* On RPi create `systemd` unit file called `/etc/systemd/system/ths-dashboard.service`
+```
+[Unit]
+Description=Temperature Humidity Sensor Dashboard
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=<user>
+Environment="STATIC_DIR=/home/ths/static"
+ExecStart=/home/<user>/bin/ths-dashboard
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
+```
+
+* Start services
+```
+systemctl start ths-dashboard
+systemctl enable ths-dashboard
+```
 
 
  ### Troubleshooting
