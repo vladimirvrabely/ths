@@ -26,9 +26,9 @@ impl DbPool {
                 -- UNIX milliseconds
                 at INTEGER PRIMARY KEY,
                 -- Celsius degrees
-                temperature REAL,
+                temperature REAL NOT NULL,
                 -- percentage
-                humidity REAL
+                humidity REAL NOT NULL
             );
             "#
         )
