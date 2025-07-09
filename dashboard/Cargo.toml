@@ -7,6 +7,8 @@ authors.workspace = true
 [dependencies]
 askama = { version = "0.14.0", features = ["blocks"] }
 axum = { version = "0.8.4", features = ["form"] }
+chrono = "0.4"
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"]}
 thiserror = "2.0"
 tokio = { version = "1.4", features = ["full"] }
 tower-http = { version = "0.6", features = ["fs"] }

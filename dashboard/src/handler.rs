@@ -1,8 +1,12 @@
 use askama::Template;
 use axum::{
+    extract::State,
     http::StatusCode,
     response::{Html, IntoResponse, Response},
 };
+
+use crate::model::Measurement;
+use crate::state::SharedState;
 
 #[derive(Template)]
 #[template(path = "error.html")]
@@ -37,9 +41,16 @@ impl IntoResponse for AppError {
 
 #[derive(Template)]
 #[template(path = "index.html")]
-struct IndexTemplate;
+struct IndexTemplate {
+    measurement: Measurement,
+}
 
-pub async fn index() -> Result<impl IntoResponse, AppError> {
-    let template = IndexTemplate {};
+pub async fn index(State(mut state): State<SharedState>) -> Result<impl IntoResponse, AppError> {
+    let measurement = state
+        .0
+        .get_latest_measurement()
+        .await
+        .expect("should have msr");
+    let template = IndexTemplate { measurement };
     Ok(Html(template.render()?))
 }

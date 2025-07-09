@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "select at, temperature, humidity from measurement limit 1",
+  "describe": {
+    "columns": [
+      {
+        "name": "at",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "temperature",
+        "ordinal": 1,
+        "type_info": "Float"
+      },
+      {
+        "name": "humidity",
+        "ordinal": 2,
+        "type_info": "Float"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "926118b8fd3ee089541e33ab314bc09aaa654b8365ffe0e5ab6f72d8572edaf0"
+}

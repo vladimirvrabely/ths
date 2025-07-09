@@ -5,8 +5,9 @@ use tower_http::services::ServeDir;
 use tracing_subscriber::{EnvFilter, fmt, prelude::*};
 
 use crate::handler;
+use crate::state::SharedState;
 
-pub async fn run(static_dir: &str) {
+pub async fn run(static_dir: &str, db_path: &str) {
     init_env_logging();
     tracing::info!("Starting ths-dashboard service");
 
@@ -15,9 +16,14 @@ pub async fn run(static_dir: &str) {
     // build our application with a route
     let static_dir = ServeDir::new(static_dir);
 
+    let shared_state = SharedState::new(db_path)
+        .await
+        .expect("should connect to db");
+
     let app = Router::new()
         .route("/", get(handler::index))
-        .nest_service("/static", static_dir);
+        .nest_service("/static", static_dir)
+        .with_state(shared_state);
 
     // run it
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000")

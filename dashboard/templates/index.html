@@ -25,21 +25,21 @@
       </p>
       <h6>
         <i class="extra">schedule</i>
-        2025-08-01 12:00:05
+        {{ measurement.at }}
       </h6>
       <p class="italic">
         Temperature
       </p>
       <h6>
         <i class="extra">device_thermostat</i>
-        25.0 °C
+        {{ measurement.temperature }} °C
       </h6>
       <p class="italic">
         Humidity
       </p>
       <h6>
         <i class="extra">humidity_mid</i>
-        50%
+        {{ measurement.humidity }} %
       </h6>
     </article>
     <nav class="center-align">
