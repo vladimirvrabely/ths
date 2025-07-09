@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "select at, temperature, humidity from measurement limit 1",
+  "query": "SELECT at, temperature, humidity FROM measurement ORDER BY at DESC limit 1",
   "describe": {
     "columns": [
       {
@@ -28,5 +28,5 @@
       false
     ]
   },
-  "hash": "926118b8fd3ee089541e33ab314bc09aaa654b8365ffe0e5ab6f72d8572edaf0"
+  "hash": "4fadad866eb1d67bb4e05244360f1b16fef341fb253c637993bfafea2274e149"
 }

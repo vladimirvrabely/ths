@@ -16,14 +16,16 @@ impl DbPool {
     pub async fn get_latest_measurement(&mut self) -> Result<Measurement, Error> {
         let mut tx = self.0.begin().await?;
 
-        let measurement = sqlx::query!("select at, temperature, humidity from measurement limit 1")
-            .fetch_one(&mut *tx)
-            .await
-            .map(|record| Measurement {
-                at: Utc.timestamp_millis_opt(record.at).unwrap(),
-                temperature: record.temperature,
-                humidity: record.humidity,
-            })?;
+        let measurement = sqlx::query!(
+            "SELECT at, temperature, humidity FROM measurement ORDER BY at DESC limit 1"
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map(|record| Measurement {
+            at: Utc.timestamp_millis_opt(record.at).unwrap(),
+            temperature: record.temperature,
+            humidity: record.humidity,
+        })?;
 
         tx.commit().await?;
         Ok(measurement)
