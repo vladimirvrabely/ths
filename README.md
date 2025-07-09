@@ -52,6 +52,7 @@ systemctl enable ths-station
 ### ths-dashboard
 
 * Copy `target/aarch64-unknown-linux-gnu/release/ths-dashboard` to RPi to the dir `/home/<user>/bin/`
+* Copy `dashboard/static` to RPi to the dir `/home/<user>/ths/static`
 
 * On RPi create `systemd` unit file called `/etc/systemd/system/ths-dashboard.service`
 ```
@@ -64,6 +65,7 @@ Restart=always
 RestartSec=1
 User=<user>
 Environment="STATIC_DIR=/home/<user>/ths/static"
+Environment="DB_PATH=/home/<user>/data/measurement.sqlite"
 ExecStart=/home/<user>/bin/ths-dashboard
 StandardOutput=null
 
