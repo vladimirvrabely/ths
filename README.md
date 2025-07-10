@@ -12,7 +12,7 @@ Small project for temperature/humidity sensor station.
 
 ## Usage
 
-* Cross-compile for the relevant target
+* Cross-compile for the relevant target (assuming that you're on x86_64 GNU/Linux)
 ```sh
 just cross-build
 ```
@@ -34,6 +34,7 @@ User=<user>
 Environment="TTY_PATH=/dev/ttyUSB0"
 Environment="DB_PATH=/home/<user>/data/measurement.sqlite"
 Environment="CSV_PATH=/home/<user>/data/measurement.csv"
+Environment="MEASUREMENT_PERIOD_SECONDS=10"
 ExecStart=/home/<user>/bin/ths-station
 StandardOutput=null
 

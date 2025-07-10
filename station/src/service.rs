@@ -8,12 +8,17 @@ use crate::modbus::spawn_modbus_read_task;
 use crate::model::Measurement;
 use crate::sqlite::spawn_sqlite_write_task;
 
-pub async fn run(tty_path: String, db_path: String, csv_path: String) {
+pub async fn run(
+    tty_path: String,
+    db_path: String,
+    csv_path: String,
+    measurement_period_secs: u64,
+) {
     init_env_logging();
 
     tracing::info!("Starting temperature/humidity sensor service");
 
-    let period = Duration::from_secs(5);
+    let period = Duration::from_secs(measurement_period_secs);
 
     let (tx, rx) = mpsc::channel::<Measurement>(32);
 
