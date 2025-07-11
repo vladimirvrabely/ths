@@ -24,12 +24,12 @@ impl DbPool {
             r#"
             CREATE TABLE IF NOT EXISTS measurement (
                 -- UNIX milliseconds
-                at INTEGER PRIMARY KEY,
+                at INTEGER NOT NULL PRIMARY KEY ASC,
                 -- Celsius degrees
                 temperature REAL NOT NULL,
                 -- percentage
                 humidity REAL NOT NULL
-            );
+            ) WITHOUT ROWID;
             "#
         )
         .execute(&mut *tx)

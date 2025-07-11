@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n            CREATE TABLE IF NOT EXISTS measurement (\n                -- UNIX milliseconds\n                at INTEGER NOT NULL PRIMARY KEY ASC,\n                -- Celsius degrees\n                temperature REAL NOT NULL,\n                -- percentage\n                humidity REAL NOT NULL\n            ) WITHOUT ROWID;\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": []
+  },
+  "hash": "9ba85060a22c0888bf8b3e0437cdcc8d8e45869a1c49a520ce3f273d3e4a53b3"
+}
