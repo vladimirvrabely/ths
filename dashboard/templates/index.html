@@ -1,4 +1,4 @@
-
+<!doctype html>
 <html>
 
 <head>
@@ -9,21 +9,22 @@
   <link href="/static/beercss@3.11.30.min.css" rel="stylesheet">
   <link href="/static/custom.css" rel="stylesheet">
   <script src="/static/htmx.org@2.0.6.min.js"></script>
+  <!-- <script src="/static/uPlot.iife.min.js"></script> -->
+  <!-- <link rel="stylesheet" href="/static/uPlot.min.css"> -->
   <meta name="htmx-config" content='{"responseHandling": [{"code":".*", "swap": true}]}'>
   <title>Weather</title>
 </head>
 
 <body class="light">
-  <!-- <progress id="indicator" class="htmx-indicator center top"></progress> -->
   <nav class="left max l">
     <header>
       <h4>Weather</h4>
     </header>
-    <a>
+    <a hx-get="/" hx-target="main" hx-push-url="true">
       <i>home</i>
       <div>Home</div>
     </a>
-    <a>
+    <a hx-get="/history" hx-target="main" hx-push-url="true">
       <i>history</i>
       <div>History</div>
     </a>
@@ -34,11 +35,11 @@
   </nav>
 
   <nav class="left m">
-    <a>
+    <a hx-get="/" hx-target="main" hx-push-url="true">
       <i>home</i>
       <div>Home</div>
     </a>
-    <a>
+    <a hx-get="/history" hx-target="main" hx-push-url="true">
       <i>history</i>
       <div>History</div>
     </a>
@@ -49,10 +50,10 @@
   </nav>
 
   <nav class="bottom s">
-    <a>
+    <a hx-get="/" hx-target="main" hx-push-url="true" hx-indicator="#indicator">
       <i>home</i>
     </a>
-    <a>
+    <a hx-get="/history" hx-target="main" hx-push-url="true" hx-indicator="#indicator">
       <i>history</i>
     </a>
     <a>
@@ -60,9 +61,11 @@
     </a>
   </nav>
 
+  <!-- <progress id="indicator" class="htmx-indicator center top"></progress> -->
   <main class="responsive">
     {% block main %}
-    <article class="primary-container">
+    <h4>Now</h4>
+    <article class="primary-container no-round border">
       <p class="italic">
         <i class="small">schedule</i>
         Measured at

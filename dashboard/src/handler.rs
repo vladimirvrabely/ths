@@ -1,7 +1,7 @@
 use askama::Template;
 use axum::{
     extract::State,
-    http::StatusCode,
+    http::{HeaderMap, StatusCode},
     response::{Html, IntoResponse, Response},
 };
 
@@ -40,17 +40,47 @@ impl IntoResponse for AppError {
 }
 
 #[derive(Template)]
-#[template(path = "index.html")]
+#[template(path = "index.html", blocks=["main"])]
 struct IndexTemplate {
     measurement: Measurement,
 }
 
-pub async fn index(State(mut state): State<SharedState>) -> Result<impl IntoResponse, AppError> {
+pub async fn index(
+    headers: HeaderMap,
+    State(mut state): State<SharedState>,
+) -> Result<impl IntoResponse, AppError> {
+    tracing::debug!("GET / request");
+
     let measurement = state
         .0
         .get_latest_measurement()
         .await
         .expect("should have msr");
+
     let template = IndexTemplate { measurement };
-    Ok(Html(template.render()?))
+
+    if headers.get("hx-request").is_some() {
+        Ok(Html(template.as_main().render()?).into_response())
+    } else {
+        Ok(Html(template.render()?).into_response())
+    }
+}
+
+#[derive(Template)]
+#[template(path = "history.html", blocks=["main"])]
+struct HistoryTemplate {}
+
+pub async fn history(
+    headers: HeaderMap,
+    State(mut _state): State<SharedState>,
+) -> Result<impl IntoResponse, AppError> {
+    tracing::debug!("GET /history request");
+
+    let template = HistoryTemplate {};
+
+    if headers.get("hx-request").is_some() {
+        Ok(Html(template.as_main().render()?).into_response())
+    } else {
+        Ok(Html(template.render()?).into_response())
+    }
 }

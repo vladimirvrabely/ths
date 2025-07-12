@@ -22,6 +22,7 @@ pub async fn run(static_dir: &str, db_path: &str) {
 
     let app = Router::new()
         .route("/", get(handler::index))
+        .route("/history", get(handler::history))
         .nest_service("/static", static_dir)
         .with_state(shared_state);
 
