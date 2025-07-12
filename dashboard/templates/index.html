@@ -1,3 +1,4 @@
+
 <html>
 
 <head>
@@ -14,37 +15,76 @@
 
 <body class="light">
   <!-- <progress id="indicator" class="htmx-indicator center top"></progress> -->
+  <nav class="left max l">
+    <header>
+      <h4>Weather</h4>
+    </header>
+    <a>
+      <i>home</i>
+      <div>Home</div>
+    </a>
+    <a>
+      <i>history</i>
+      <div>History</div>
+    </a>
+    <a>
+      <i>cloud</i>
+      <div>Other</div>
+    </a>
+  </nav>
+
+  <nav class="left m">
+    <a>
+      <i>home</i>
+      <div>Home</div>
+    </a>
+    <a>
+      <i>history</i>
+      <div>History</div>
+    </a>
+    <a>
+      <i>cloud</i>
+      <div>Other</div>
+    </a>
+  </nav>
+
+  <nav class="bottom s">
+    <a>
+      <i>home</i>
+    </a>
+    <a>
+      <i>history</i>
+    </a>
+    <a>
+      <i>cloud</i>
+    </a>
+  </nav>
+
   <main class="responsive">
     {% block main %}
-    <header>
-      <h3>Weather</h3>
-    </header>
     <article class="primary-container">
       <p class="italic">
+        <i class="small">schedule</i>
         Measured at
       </p>
       <h6>
-        <i class="extra">schedule</i>
         {{ measurement.at }}
       </h6>
       <p class="italic">
+        <i class="small">device_thermostat</i>
         Temperature
       </p>
       <h6>
-        <i class="extra">device_thermostat</i>
         {{ measurement.temperature }} °C
       </h6>
       <p class="italic">
+        <i class="small">humidity_mid</i>
         Humidity
       </p>
       <h6>
-        <i class="extra">humidity_mid</i>
         {{ measurement.humidity }} %
       </h6>
     </article>
-    <nav class="center-align">
-      <button class="responsive small-round">History</button>
-    </nav>
     {% endblock %}
   </main>
 </body>
