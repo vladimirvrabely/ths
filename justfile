@@ -24,8 +24,8 @@ doc:
         RUSTDOCFLAGS="--enable-index-page -Zunstable-options" cargo +nightly doc --workspace --no-deps --all-features
 
 # Run
-run bin lib="":
-        RUST_LOG=info,{{ lib }}=debug cargo run --bin {{ bin }}
+run bin:
+        RUST_LOG=info,{{ replace(bin, '-', '_') }}=debug cargo run --bin {{ bin }}
 
 
 
