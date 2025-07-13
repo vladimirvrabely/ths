@@ -20,11 +20,11 @@
     <header>
       <h4>Weather</h4>
     </header>
-    <a hx-get="/" hx-target="main" hx-push-url="true">
+    <a hx-get="/" hx-target="main" hx-push-url="true" hx-indicator="#indicator">
       <i>home</i>
       <div>Home</div>
     </a>
-    <a hx-get="/history" hx-target="main" hx-push-url="true">
+    <a hx-get="/history" hx-target="main" hx-push-url="true" hx-indicator="#indicator">
       <i>history</i>
       <div>History</div>
     </a>
@@ -35,11 +35,11 @@
   </nav>
 
   <nav class="left m">
-    <a hx-get="/" hx-target="main" hx-push-url="true">
+    <a hx-get="/" hx-target="main" hx-push-url="true" hx-indicator="#indicator">
       <i>home</i>
       <div>Home</div>
     </a>
-    <a hx-get="/history" hx-target="main" hx-push-url="true">
+    <a hx-get="/history" hx-target="main" hx-push-url="true" hx-indicator="#indicator">
       <i>history</i>
       <div>History</div>
     </a>
@@ -61,9 +61,9 @@
     </a>
   </nav>
 
-  <!-- <progress id="indicator" class="htmx-indicator center top"></progress> -->
   <main class="responsive">
     {% block main %}
+    <progress id="indicator" class="htmx-indicator center top"></progress>
     <h4>Now</h4>
     <article class="primary-container no-round border">
       <p class="italic">

@@ -75,6 +75,7 @@ pub async fn history(
     State(mut _state): State<SharedState>,
 ) -> Result<impl IntoResponse, AppError> {
     tracing::debug!("GET /history request");
+    tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
 
     let template = HistoryTemplate {};
 
