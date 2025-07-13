@@ -3,4 +3,54 @@
 {% block main %}
 <progress id="indicator" class="htmx-indicator center top"></progress>
 <h4>History</h4>
+<article id="plot" class="primary-container no-round border"></article>
+<script>
+    function getSize() {
+        let container = document.getElementById("plot");
+
+        return {
+            width: container.getBoundingClientRect().width * 0.9,
+            height: window.innerHeight * 0.6,
+        }
+    }
+
+    function makePlot() {
+        let data = [
+            [1752173400, 1752173700, 1752174000, 1752174300, 1752174600],
+            [25.197959183673472, 25.144318181818218, 25.580459770114963, 25.42978723404256, 25.47600000000001],
+        ];
+
+        let opts = {
+            title: "Temperature",
+            id: "chart",
+            class: "chart",
+            ...getSize(),
+            series: [
+                {},
+                {
+                    label: "Temperature",
+                    stroke: "orange",
+                    width: 4,
+                    // band: true,
+                    scale: "C",
+                },
+            ],
+            axes: [
+                {},
+                {
+                    scale: "C",
+                    values: (self, ticks) => ticks.map(rawValue => rawValue.toFixed(0) + "°C"),
+                    title: "ok"
+                },
+            ],
+            cursor: { drag: { x: true, y: true } }
+        };
+
+        let plotContainter = document.getElementById("plot");
+
+        return uPlot(opts, data, plotContainter);
+    }
+
+    makePlot()
+</script>
 {% endblock %}
