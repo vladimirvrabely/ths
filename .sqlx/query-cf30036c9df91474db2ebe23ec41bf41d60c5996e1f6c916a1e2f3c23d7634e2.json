@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "\n            SELECT min(at) AS at, avg(temperature) AS temperature, avg(humidity) AS humidity\n            FROM measurement \n            WHERE at > unixepoch('now', '-7 days') * 1000\n            GROUP BY (at / 60000)\n            ORDER BY at ASC;\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "at",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "temperature",
+        "ordinal": 1,
+        "type_info": "Float"
+      },
+      {
+        "name": "humidity",
+        "ordinal": 2,
+        "type_info": "Float"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "cf30036c9df91474db2ebe23ec41bf41d60c5996e1f6c916a1e2f3c23d7634e2"
+}

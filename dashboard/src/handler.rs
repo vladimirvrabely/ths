@@ -5,7 +5,7 @@ use axum::{
     response::{Html, IntoResponse, Response},
 };
 
-use crate::model::Measurement;
+use crate::model::{Measurement, MeasurementData};
 use crate::state::SharedState;
 
 #[derive(Template)]
@@ -68,15 +68,22 @@ pub async fn index(
 
 #[derive(Template)]
 #[template(path = "history.html", blocks=["main"])]
-struct HistoryTemplate {}
+struct HistoryTemplate {
+    measurement_data: MeasurementData,
+}
 
 pub async fn history(
     headers: HeaderMap,
-    State(mut _state): State<SharedState>,
+    State(mut state): State<SharedState>,
 ) -> Result<impl IntoResponse, AppError> {
     tracing::debug!("GET /history request");
+    let measurement_data = state
+        .0
+        .get_latest_week_measurement_data()
+        .await
+        .expect("should have msrs");
 
-    let template = HistoryTemplate {};
+    let template = HistoryTemplate { measurement_data };
 
     if headers.get("hx-request").is_some() {
         Ok(Html(template.as_main().render()?).into_response())

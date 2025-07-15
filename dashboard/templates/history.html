@@ -16,8 +16,17 @@
 
     function makePlot() {
         let data = [
-            [1752173400, 1752173700, 1752174000, 1752174300, 1752174600],
-            [25.197959183673472, 25.144318181818218, 25.580459770114963, 25.42978723404256, 25.47600000000001],
+            [
+                {%- for x in measurement_data.timestamp -%}
+                {{- x -}},
+                {%- endfor -%}
+
+            ],
+            [
+                {%- for x in measurement_data.temperature -%}
+                {{- x -}},
+                {%- endfor -%}
+            ],
         ];
 
         let opts = {
