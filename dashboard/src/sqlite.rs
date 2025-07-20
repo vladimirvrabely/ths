@@ -40,7 +40,7 @@ impl DbPool {
             SELECT min(at) AS at, avg(temperature) AS temperature, avg(humidity) AS humidity
             FROM measurement 
             WHERE at > unixepoch('now', '-7 days') * 1000
-            GROUP BY (at / 60000)
+            GROUP BY (at / 300000)
             ORDER BY at ASC;
         "#
         )
