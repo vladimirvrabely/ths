@@ -39,6 +39,7 @@ impl SensorReader {
             temperature,
             humidity,
         };
+        tracing::info!("Read {:?}", &measurement);
         Ok(measurement)
     }
 }
